@@ -350,7 +350,7 @@ onSessionClick(session: any) {
     next: () => {
       this.loadPlanningData();
       bootstrap.Modal.getInstance(document.getElementById('reservationModal'))?.hide();
-      alert('✅ Séance réservée avec succès !');
+     
     },
   error: (err) => {
   const errorMsg = err.error?.message || err.message || '';
@@ -380,9 +380,7 @@ onSessionClick(session: any) {
       }
     }, 200); // 200ms pour être totalement sécurisé
 
-  } else {
-    alert(errorMsg || 'Erreur lors de la réservation');
-  }
+  } 
 }
   });
  

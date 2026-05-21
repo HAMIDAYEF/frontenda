@@ -10,11 +10,11 @@ import { InstructorService } from '../../services/instructor.service';
 import { ExamService } from '../../services/exam.service';
 import { PaymentService } from '../../services/payment.service';
 import { AuthService } from '../../services/auth.service';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
@@ -178,7 +178,10 @@ export class HomeComponent implements OnInit {
 
   savePaiement(): void {
     if (!this.newPayment.candidateId || !this.newPayment.amount) {
-      alert("Veuillez sélectionner un candidat et un montant.");
+     Swal.fire({
+  icon: 'warning',
+  text: 'Veuillez remplir tous les champs'
+});
       return;
     }
 

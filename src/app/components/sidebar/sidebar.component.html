@@ -50,13 +50,13 @@
         <span class="ms-3 fw-medium" *ngIf="!isCollapsed">Examen</span>
       </a>
     </li>
-
-    <li class="nav-item mb-1">
+<li class="nav-item mb-1" *ngIf="isProprietaire">
       <a [routerLink]="['/statistiques']" routerLinkActive="active" class="nav-link text-dark d-flex align-items-center py-2 px-3">
         <i class="bi bi-bar-chart fs-5"></i>
-        <span class="ms-3 fw-medium">Statistiques</span>
+        <span class="ms-3 fw-medium" *ngIf="!isCollapsed">Statistiques</span>
       </a>
     </li>
+    
   </ul>
 
  

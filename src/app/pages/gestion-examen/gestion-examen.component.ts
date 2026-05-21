@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExamService } from '../../services/exam.service';
 import { CandidateService } from '../../services/candidate.service';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-gestion-examen',
   standalone: true,
@@ -129,7 +129,10 @@ export class GestionExamenComponent implements OnInit {
 
   addExamen(): void {
     if (!this.newExam.candidateId || !this.newExam.examDate) {
-      alert("Veuillez sélectionner un candidat et une date");
+      Swal.fire({
+        icon: 'warning',
+        text: 'Veuillez remplir tous les champs'
+      });
       return;
     }
 

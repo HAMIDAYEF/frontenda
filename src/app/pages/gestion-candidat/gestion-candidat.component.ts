@@ -220,7 +220,7 @@ export class GestionCandidatComponent implements OnInit {
     if (!confirm('Voulez-vous vraiment supprimer ce candidat ?')) return;
     this.candidateService.deleteCandidate(id).subscribe({
       next: () => {
-        alert('Candidat supprimé avec succès');
+     
         this.loadCandidates();
         this.closeModal('deleteCandidatModal');
       }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
 import { CandidateService } from '../../services/candidate.service';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-gestion-paiement',
   standalone: true,
@@ -104,7 +104,10 @@ export class GestionPaiementComponent implements OnInit {
 savePaiement(): void {
   // 1. Basic Validation
   if (!this.newPayment.candidateId || this.newPayment.amount <= 0) {
-    alert("Veuillez sélectionner un candidat et entrer un montant > 0");
+     Swal.fire({
+     icon: 'warning',
+     text: 'Veuillez remplir tous les champs'
+   });
     return;
   }
 
@@ -120,7 +123,10 @@ savePaiement(): void {
   const remainingLimit = totalToPay - alreadyPaid;
 
   if (Number(this.newPayment.amount) > remainingLimit) {
-    alert(`Impossible : Le reste à payer est de ${remainingLimit} DA. Vous ne pouvez pas saisir ${this.newPayment.amount} DA.`);
+    Swal.fire({
+      icon: 'warning',
+      text: `Impossible : Le reste à payer est de ${remainingLimit} DA. Vous ne pouvez pas saisir ${this.newPayment.amount} DA.`
+    });
     return;
   }
 
