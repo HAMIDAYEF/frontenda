@@ -161,9 +161,16 @@ export class GestionEmployeComponent implements OnInit {
     this.selectedEmployee = emp;
   }
 
-  viewEmployee(emp: any) {
-    this.selectedEmployee = emp;
-  }
+    viewEmployee(emp: any) {
+  this.selectedEmployee = emp;
+  setTimeout(() => {
+    const modalElement = document.getElementById('viewEmployeModal');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }, 0);
+}
 
   private handleSuccess(msg: string) {
     this.successMessage = msg;

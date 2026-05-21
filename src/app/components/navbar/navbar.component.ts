@@ -38,7 +38,9 @@ export class NavbarComponent implements OnInit {
   newPassword = '';
   confirmPassword = '';
   passwordError = ''; 
-
+feedbackType: 'success' | 'danger' = 'success';
+  feedbackTitle: string = '';
+  feedbackMessage: string = '';
   constructor(
     private authService: AuthService,
     private adminService: AdminService,
@@ -68,14 +70,16 @@ export class NavbarComponent implements OnInit {
   }
 
   private loadSchoolInfo(): void {
-    this.schoolService.getAll().subscribe({
-      next: (schools) => {
-        if (schools && schools.length > 0) {
-          this.school = { ...schools[0] };
-        }
+  this.schoolService.getAll().subscribe({
+    next: (response) => {
+      console.log('School response:', response); // Check this in browser DevTools
+      const schools = (response as any)?.records || (response as any)?.data || response;
+      if (schools && schools.length > 0) {
+        this.school = { ...schools[0] };
       }
-    });
-  }
+    }
+  });
+}
 
   private openModal(targetId: string): void {
     const openModals = document.querySelectorAll('.modal.show');
@@ -127,11 +131,11 @@ export class NavbarComponent implements OnInit {
 
     this.adminService.update(this.admin.id, payload).subscribe({
       next: () => { 
-        alert('Profil mis à jour avec succès !'); 
-        this.openProfileModal(); 
-      },
-      error: () => alert('Erreur lors de la mise à jour du profil')
-    });
+       this.showFeedbackModal('success', 'Succès', 'Profil mis à jour avec succès !'); 
+      this.openProfileModal(); 
+    },
+    error: () => this.showFeedbackModal('danger', 'Erreur', 'Erreur lors de la mise à jour du profil')
+  });
   }
 
 updateSchool(): void {
@@ -153,8 +157,7 @@ updateSchool(): void {
     // CRITIQUE : On envoie le "schoolPayload" tout propre au lieu de "this.school"
     this.schoolService.update(this.school.id, schoolPayload).subscribe({
       next: (response) => {
-        alert('Informations de l\'auto-école mises à jour avec succès !');
-        
+        this.showFeedbackModal('success', 'Succès', 'Informations de l\'auto-école mises à jour avec succès !');
         // On met à jour l'objet local pour que le modal d'affichage s'actualise
         this.school = { ...this.school, ...schoolPayload };
         
@@ -163,7 +166,7 @@ updateSchool(): void {
       },
       error: (err) => {
         console.error(err);
-        alert('Erreur lors de la mise à jour de l\'école');
+        this.showFeedbackModal('danger', 'Erreur', 'Erreur lors de la mise à jour de l\'école');
       }
     });
   }
@@ -180,17 +183,28 @@ updateSchool(): void {
     };
     this.adminService.update(this.admin.id, payload).subscribe({
       next: () => {
-        alert('Mot de passe changé avec succès !');
+        this.showFeedbackModal('success', 'Succès', 'Mot de passe changé avec succès !');
         this.currentPassword = this.newPassword = this.confirmPassword = '';
         this.openProfileModal();
       },
-      error: (err) => this.passwordError = err.error?.message || 'Erreur changement mot de passe'
-    });
+      error: (err) => this.showFeedbackModal('danger', 'Erreur', err.error?.message || 'Erreur changement mot de passe')
+  });
   }
 
   logout(): void {
     if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
       this.authService.logout();
+    }
+  }
+    private showFeedbackModal(type: 'success' | 'danger', title: string, message: string): void {
+    this.feedbackType = type;
+    this.feedbackTitle = title;
+    this.feedbackMessage = message;
+
+    const modalEl = document.getElementById('feedbackModal');
+    if (modalEl) {
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
     }
   }
 }
