@@ -34,64 +34,64 @@
       <table class="table table-hover text-center align-middle mb-0">
         <thead class="table-light">
           <tr>
-        
             <th>NOM</th>
             <th>PRÉNOM</th>
-            <th>TYPE</th> 
-           <th>NUMÉRO</th> 
+            <th>TYPE / RÔLE</th> 
+            <th>NUMÉRO</th> 
             <th>ACTION</th>
           </tr>
         </thead>
-      <tbody>
-  @for (emp of filteredEmployees; track emp.id) {
-    <tr>
-      <td>{{ emp.lastName || emp.last_name | uppercase }}</td>
-
-      <td>{{ emp.firstName || emp.first_name }}</td>
-
-      <td>
-        <span class="badge rounded-pill px-3" 
-              [class]="emp.type === 'admin' ? 'bg-primary' : 'bg-info text-dark'">
-          {{ emp.type === 'admin' ? 'ADMIN' : 'MONITEUR' }}
-        </span>
-      </td>
-
-      <td class="text-muted">{{ emp.phone || '—' }}</td>
-
-      <td>
-      <button class="btn btn-sm btn-light border me-1" 
+        <tbody>
+          @for (emp of filteredEmployees; track emp.type + '-' + emp.id) {
+            <tr>
+              <td>{{ emp.lastName || emp.last_name | uppercase }}</td>
+              <td>{{ emp.firstName || emp.first_name }}</td>
+              <td>
+                @if (emp.type === 'admin') {
+                  <span class="badge rounded-pill px-3 bg-primary">
+                    {{ emp.role === 'proprietaire' ? 'PROPRIÉTAIRE' : 'SECRÉTAIRE' }}
+                  </span>
+                } @else {
+                  <span class="badge rounded-pill px-3 bg-info text-dark">
+                    MONITEUR
+                  </span>
+                }
+              </td>
+              <td class="text-muted">{{ emp.phone || '—' }}</td>
+              <td>
+                <button class="btn btn-sm btn-light border me-1" 
         (click)="viewEmployee(emp)">
   <i class="bi bi-eye text-dark"></i>
 </button>
 
-        @if (emp.type === 'instructor') {
-          <a class="btn btn-sm btn-light border me-1 text-success" 
-             [routerLink]="['/planning-moniteur', emp.id]">
-            <i class="bi bi-calendar3"></i>
-          </a>
-        }
+                @if (emp.type === 'instructor') {
+                  <a class="btn btn-sm btn-light border me-1 text-success" 
+                     [routerLink]="['/planning-moniteur', emp.id]">
+                    <i class="bi bi-calendar3"></i>
+                  </a>
+                }
 
-        <button class="btn btn-sm btn-light border me-1" 
-                (click)="openEditModal(emp)"
-                data-bs-toggle="modal" 
-                data-bs-target="#addEmployeModal">
-          <i class="bi bi-pencil text-primary"></i>
-        </button>
+                <button class="btn btn-sm btn-light border me-1" 
+                        (click)="openEditModal(emp)"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#addEmployeModal">
+                  <i class="bi bi-pencil text-primary"></i>
+                </button>
 
-        <button class="btn btn-sm btn-light border text-danger" 
-                (click)="openDeleteModal(emp)" 
-                data-bs-toggle="modal" 
-                data-bs-target="#deleteEmployeModal">
-          <i class="bi bi-trash"></i>
-        </button>
-      </td>
-    </tr>
-  } @empty {
-    <tr>
-      <td colspan="5" class="text-muted py-5">Aucun employé trouvé.</td>
-    </tr>
-  }
-</tbody>  
+                <button class="btn btn-sm btn-light border text-danger" 
+                        (click)="openDeleteModal(emp)" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#deleteEmployeModal">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="text-muted py-5">Aucun employé trouvé.</td>
+            </tr>
+          }
+        </tbody>  
       </table>
     </div>
   </div>
@@ -136,6 +136,22 @@
               <option value="instructor">Moniteur</option>
             </select>
           </div>
+
+          <!-- Affichage conditionnel du choix du rôle pour l'admin -->
+          @if (form.type === 'admin') {
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-primary">Rôle de l'admin</label>
+              <select class="form-select border-primary" 
+                      [(ngModel)]="form.role" 
+                      [ngModelOptions]="{standalone: true}">
+                <option value="secretaire">Secrétaire (par défaut)</option>
+                <option value="proprietaire">Propriétaire</option>
+              </select>
+            </div>
+          } @else {
+            <div class="col-md-6"></div>
+          }
+
           <div class="col-12">
             <label class="form-label small fw-bold">Email</label>
             <input type="email" class="form-control" 
@@ -175,6 +191,7 @@
     </div>
   </div>
 </div>
+<!-- VIEW MODAL -->
 <div class="modal fade" id="viewEmployeModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="false">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg">
